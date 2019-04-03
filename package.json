@@ -1,0 +1,26 @@
+{
+  "name": "logtick",
+  "version": "1.0.0",
+  "description": "colorful console log",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/triday/logtick.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/triday/logtick/issues"
+  },
+  "homepage": "https://github.com/triday/logtick#readme",
+  "devDependencies": {
+    "typescript": "^3.4.1"
+  },
+  "dependencies": {
+    "tsharp": "^1.5.0"
+  }
+}
