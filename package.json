@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "colorful console log",
   "main": "index.js",
+  "engines": {
+    "node": ">= 10.8.0",
+    "npm": ">= 6.2.0"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -18,9 +22,20 @@
   },
   "homepage": "https://github.com/triday/logtick#readme",
   "devDependencies": {
-    "typescript": "^3.4.1"
+    "@types/mocha": "^5.2.6",
+    "@types/node": "^10.9.0",
+    "clean-webpack-plugin": "^2.0.1",
+    "gulp": "^4.0.0",
+    "mocha": "^6.0.2",
+    "requiredir": "^1.0.7",
+    "source-map-loader": "^0.2.4",
+    "ts-loader": "^5.3.3",
+    "ts-node": "^8.0.3",
+    "typescript": "^3.4.1",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.0"
   },
-  "dependencies": {
-    "tsharp": "^1.5.0"
+  "peerDependencies": {
+    "tsharp": "^1.6.1"
   }
 }

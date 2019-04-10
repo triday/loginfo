@@ -1,5 +1,13 @@
-import "./types";
 import "tsharp";
+export type LOG_TYPE = "debug" | "info" | "warn" | "error" | "fatal";
+
+interface ILogOptions {
+    fore?: ForeColor,
+    back?: BackColor,
+    styles?: TextStyle[],
+    format?(text: string, type: string): string
+}
+
 const DEFAULT_LOGINFO: ILogOptions = {
     styles: [],
     format: function (text, type) {
@@ -18,7 +26,7 @@ export function GetConfig(type: LOG_TYPE): ILogOptions {
 
 export function SetConfig(options: { [key: string]: ILogOptions }): void {
     Object.keys(options).forEach(p => {
-        AllSettings[p] = Object.merge({}, DEFAULT_LOGINFO, options[p]);
+        AllSettings[p] = Object.extend({}, DEFAULT_LOGINFO, options[p]);
     });
 }
 
