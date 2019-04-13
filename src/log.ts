@@ -1,5 +1,6 @@
 import { convertMsgToConsole } from './msg_convert'
-import { LOG_TYPE, GetConfig } from './config';
+import { LOG_TYPE, GetConfig, GetLogPrefiex } from './config';
+import { isInBroswer, supportBroswerStyle } from './env';
 /**
  * 输出 debug 级别的消息。
  * @param message 要输出的消息，可以携带格式化参数。
@@ -25,7 +26,7 @@ export function info(message: string, ...args: any[]): void {
  */
 export function warn(message: string, ...args: any[]): void {
     let msg = buildMsg("warn", message, ...args);
-    writeMsg(msg, console.warn);
+    writeMsg(msg, console.log);
 }
 /**
  * 输出 error 级别的消息。
@@ -34,7 +35,7 @@ export function warn(message: string, ...args: any[]): void {
  */
 export function error(message: string, ...args: any[]): void {
     let msg = buildMsg("error", message, ...args);
-    writeMsg(msg, console.error);
+    writeMsg(msg, console.log);
 }
 /**
  * 输出 fatal 级别的消息。
@@ -43,21 +44,33 @@ export function error(message: string, ...args: any[]): void {
  */
 export function fatal(message: string, ...args: any[]): void {
     let msg = buildMsg("fatal", message, ...args);
-    writeMsg(msg, console.error);
+    writeMsg(msg, console.log);
+}
+/**
+ * 输出一个空行。
+ */
+export function empty():void{
+    console.log('');
 }
 
 export function buildMsg(type: LOG_TYPE, message: string, ...args: any[]): string {
     let lineText = String.format(message, ...args);
-    // let setting = GetConfig(type);
-    // let formatLineText = setting.format ? setting.format(lineText, type) : lineText;
-    // let colorfulText = formatLineText.toColorful(setting.fore, setting.back, ...setting.styles);
-    return lineText.toColorful("red");
+    let setting = GetConfig(type);
+    let prefiexText = GetLogPrefiex(type,setting);
+    let allStyles: (ForeColor | BackColor | TextStyle)[] = setting.styles || [];
+    if (typeof setting.fore !== "undefined") {
+        allStyles.push(setting.fore);
+    }
+    if (typeof setting.back !== "undefined") {
+        allStyles.push(setting.back);
+    }
+    if (setting.fore) allStyles.push(setting.fore)
+    return `${prefiexText}${lineText.toColorful(...allStyles)}`;
 }
-const isInBrowser = typeof window !== "undefined";
-const supportStyle = true;
+
 function writeMsg(fullMessage: string, handler: (message?: any, ...optionalParams: any[]) => void): void {
-    if (isInBrowser) {
-        if (supportStyle) {
+    if (isInBroswer) {
+        if (supportBroswerStyle) {
             let [msg, styles] = convertMsgToConsole(fullMessage);
             handler(msg, ...styles);
         } else {
