@@ -2,7 +2,8 @@
   "name": "logtick",
   "version": "1.0.0",
   "description": "colorful console log",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "engines": {
     "node": ">= 10.8.0",
     "npm": ">= 6.2.0"
@@ -38,8 +39,5 @@
   },
   "peerDependencies": {
     "tsharp": "^1.7.0"
-  },
-  "dependencies": {
-    "tsharp": "^1.7.1"
   }
 }

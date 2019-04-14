@@ -1,5 +1,6 @@
 import { info, buildMsg } from './log';
 import { supportTick } from './env';
+import { ALL_CONFIG, LogLevel } from './config';
 
 
 let lastText = '';
@@ -7,7 +8,7 @@ let lastText = '';
  * 开始一次tick操作
  */
 export function beginTick(): void {
-    if (supportTick) {
+    if (supportTick && LogLevel.info >= ALL_CONFIG.level) {
         lastText = '';
     }
 }
@@ -16,7 +17,7 @@ export function beginTick(): void {
  * @param clearBefore 是否清楚之前tick的消息，默认为 false。
  */
 export function endTick(clearBefore: boolean = false): void {
-    if (supportTick) {
+    if (supportTick && LogLevel.info >= ALL_CONFIG.level) {
         if (clearBefore) {
             const ctrlStr = getGobackCtrlText(lastText);
             process.stdout.write(ctrlStr);
@@ -52,13 +53,16 @@ function getGobackCtrlText(text: string): string {
  * @param args 消息的格式化参数
  */
 export function tick(message: string, ...args: any[]) {
-    if (supportTick) {
-        const ctrlStr = getGobackCtrlText(lastText);
-        const currentText = buildMsg("info", message, ...args);
-        process.stdout.write(ctrlStr + currentText);
-        lastText = currentText;
-    } else {
-        info(message, ...args);
+    if (LogLevel.info >= ALL_CONFIG.level) {
+        if (supportTick) {
+            const ctrlStr = getGobackCtrlText(lastText);
+            const currentText = buildMsg("info", message, ...args);
+            process.stdout.write(ctrlStr + currentText);
+            lastText = currentText;
+        } else {
+            info(message, ...args);
+        }
     }
+
 }
 
