@@ -48,19 +48,36 @@ function getGobackCtrlText(text: string): string {
     return ctrlStr;
 }
 /**
+ * 执行一次tick，执行tick的时候会覆盖上一次tick的输出
+ * @param lines 要输出的行数组
+ */
+export function tick(lines: string[]): void;
+/**
  * 执行一次tick，执行tick的时候会覆盖上一次tick的输出，覆盖操作只在nodejs环境下有效。
  * @param message 要输出的消息，可以携带格式化参数，参考 String.format 格式化。
  * @param args 消息的格式化参数
  */
-export function tick(message: string, ...args: any[]) {
+export function tick(message: string, ...args: any[]): void;
+
+export function tick(messageOrLines: string | string[], ...args: any[]): void {
     if (LogLevel.info >= ALL_CONFIG.level) {
         if (supportTick) {
             const ctrlStr = getGobackCtrlText(lastText);
-            const currentText = buildMsg("info", message, ...args);
-            process.stdout.write(ctrlStr + currentText);
-            lastText = currentText;
+            if (typeof messageOrLines === "string") {
+                let currentText = buildMsg("info", messageOrLines, ...args);
+                process.stdout.write(ctrlStr + currentText);
+                lastText = currentText;
+            } else {
+                let currentText = (messageOrLines || []).map(p => buildMsg("info", p)).join("\n");
+                process.stdout.write(ctrlStr + currentText);
+                lastText = currentText;
+            }
         } else {
-            info(message, ...args);
+            if (typeof messageOrLines === "string") {
+                info(messageOrLines, ...args);
+            } else {
+                (messageOrLines || []).forEach(p => info(p));
+            }
         }
     }
 

@@ -1,4 +1,4 @@
-const console = require("../dist/index");
+const { default: console,buildAsciiProgress } = require("../dist/index");
 require("tsharp");
 
 
@@ -11,7 +11,7 @@ console.beginTick();
 let index = 0;
 let id = setInterval(function () {
     let percent = index / 100;
-    let barinfo = console.buildAsciiProgress(percent,{emptyCh:'+',fillCh:'=',columns:40})
+    let barinfo = buildAsciiProgress(percent, { emptyCh: '+', })
     console.tick("{0#yellowBright}{1#greenBright:p2}", barinfo, percent)
     if (index++ >= 100) {
         console.endTick();

@@ -1,29 +1,38 @@
-let http=require("https");
+const http = require("http");
+const { default: log, buildAsciiProgress } = require("../dist/index");
 
-const console = require("../dist/index");
-var req = http.request({
-    host: 'npm.taobao.org',
-    port: 443,
-    path: '/mirrors/node/v10.15.3/node-v10.15.3-x64.msi'
-});
+const fileurl = {
+    host: 'cachefly.cachefly.net',
+    path: '/5mb.test'
+}
+log.beginTick();
+downLoadFile(fileurl, (total, downloaded) => {
+    let percent=downloaded/total;
+    let barinfo = buildAsciiProgress(percent, { fillCh: '+', emptyCh: '.' });
+    log.tick('{0:p2} {1#yellow} {2#red:S}/{3#blue:S}', percent, barinfo, downloaded, total);
+}).then(() => {
+    log.endTick();
+    log.debug("download success!!!")
+})
 
-req.on('response', function (res) {
-    //var body = "";
-    var len = parseInt(res.headers['content-length'], 10);
-    console.info(len.toString());
-    console.beginTick();
-   
-    res.on('data', function (chunk) {
-        //body += chunk;
-        let barinfo = console.buildAsciiBar(0.5);
-        console.tick(barinfo);
+
+function downLoadFile(info, tickback) {
+    return new Promise(function (resolve) {
+        var req = http.request(info);
+        req.on('response', function (res) {
+            //var body = "";
+            let totalLen = parseInt(res.headers['content-length'], 10);
+            let downLoadLen = 0;
+            res.on('data', function (chunk) {
+                // save data code
+                downLoadLen += chunk.length;
+                if (tickback) tickback(totalLen, downLoadLen);
+            });
+            res.on('end', function () {
+                resolve(info);
+            });
+        });
+        req.end();
     });
+}
 
-    res.on('end', function () {
-        console.endTick(false);
-        console.info("ok");
-    });
-
-});
-
-req.end();
